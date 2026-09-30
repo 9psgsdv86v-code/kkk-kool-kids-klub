@@ -1,13 +1,14 @@
 // Mini-backend pre objednávky Pizza Island (Node 18+, bez závislostí).
-// Čo robí: prijme POST /api/order {id,meno,kde,kedy,...} a vytvorí GitHub Issue
-// v tvojom repe, takže objednávka pristane na GitHube aj s časom a adresou SAMA,
-// bez toho aby zákazník musel čokoľvek potvrdzovať.
+// Čo robí: prijme POST /api/order {id,meno,kde,kedy,...} a pridá KOMENTÁR
+// do issue #4 v tvojom repe, takže objednávka pristane na GitHube aj s časom
+// a adresou SAMA, bez toho aby zákazník musel čokoľvek potvrdzovať.
 //
 // Spustenie:
 //   set GITHUB_TOKEN=ghp_tvoj_token          (Windows CMD)
 //   $env:GITHUB_TOKEN="ghp_tvoj_token"       (PowerShell)
 //   set GH_OWNER=9psgsdv86v-code
 //   set GH_REPO=kkk-kool-kids-klub
+//   set GH_ISSUE_NUMBER=4
 //   node api/order-server.js
 // Frontend na tej istej doméne potom POSTuje na /api/order automaticky.
 //
@@ -26,24 +27,25 @@ function eur(v) { return Number(v).toFixed(2).replace('.', ',') + ' €'; }
 async function createIssue(o) {
   const title = `🍕 Objednávka ${o.id} — ${o.meno}`;
   const body = [
+    `🍕 **Nová objednávka ${o.id}**`, '',
     `**Meno:** ${o.meno}`, '',
     `**KDE doručiť (adresa / telefón):** ${o.kde}`, '',
     `**KEDY objednané:** ${o.kedy_sk} (${o.kedy})`, '',
-    `**ID:** ${o.id}`, '',
     `**Položky:**`,
     ...(o.polozky || []).map((x) => `- ${x.kusov}× ${x.pizza} — ${eur(x.spolu)}`),
     '', `**Suma spolu:** ${eur(o.suma)}`,
     o.poznamka ? '' : '', o.poznamka ? `**Poznámka:** ${o.poznamka}` : '',
     '', `**Stránka:** ${o.odkial || ''}`,
   ].join('\n');
-  const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/issues`, {
+  const ISSUE = process.env.GH_ISSUE_NUMBER || '4';
+  const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/issues/${ISSUE}/comments`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${TOKEN}`,
       Accept: 'application/vnd.github+json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ title, body, labels: ['objednavka'] }),
+    body: JSON.stringify({ body }),
   });
   if (!res.ok) throw new Error('GitHub API: ' + res.status + ' ' + (await res.text()));
   // voliteľne spusti aj Action zápis do orders/orders.jsonl:

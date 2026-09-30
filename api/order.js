@@ -1,6 +1,6 @@
-// Vercel serverless funkcia: POST /api/order → vytvorí GitHub Issue automaticky.
+// Vercel serverless funkcia: POST /api/order → pridá KOMENTÁR do issue #4 automaticky.
 // Token NIE JE v stránke, len tu na serveri (Vercel → Settings → Environment Variables).
-// Env: GITHUB_TOKEN (Fine-grained, repo: Issues Read&Write), GH_OWNER, GH_REPO.
+// Env: GITHUB_TOKEN (Fine-grained, repo: Issues Read&Write), GH_OWNER, GH_REPO, GH_ISSUE_NUMBER (predvolené 4).
 
 function eur(v) { return Number(v).toFixed(2).replace('.', ',') + ' €'; }
 
@@ -13,18 +13,18 @@ module.exports = async (req, res) => {
 
   const OWNER = process.env.GH_OWNER || '9psgsdv86v-code';
   const REPO = process.env.GH_REPO || 'kkk-kool-kids-klub';
+  const ISSUE = process.env.GH_ISSUE_NUMBER || '4';
   const TOKEN = process.env.GITHUB_TOKEN || '';
   if (!TOKEN) return res.status(500).json({ ok: false, error: 'Chýba GITHUB_TOKEN na serveri (Vercel env).' });
 
   const o = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body || {};
   if (!o.meno || !o.kde) return res.status(400).json({ ok: false, error: 'Chýba meno / kde.' });
 
-  const title = `🍕 Objednávka ${o.id} — ${o.meno}`;
   const body = [
+    `🍕 **Nová objednávka ${o.id}**`, '',
     `**Meno:** ${o.meno}`, '',
     `**KDE doručiť (adresa / telefón):** ${o.kde}`, '',
     `**KEDY objednané:** ${o.kedy_sk} (${o.kedy})`, '',
-    `**ID:** ${o.id}`, '',
     `**Položky:**`,
     ...((o.polozky || []).map((x) => `- ${x.kusov}× ${x.pizza} — ${eur(x.spolu)}`)),
     '', `**Suma spolu:** ${eur(o.suma)}`,
@@ -32,13 +32,13 @@ module.exports = async (req, res) => {
     '', `**Stránka:** ${o.odkial || ''}`,
   ].join('\n');
 
-  const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/issues`, {
+  const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/issues/${ISSUE}/comments`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${TOKEN}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title, body, labels: ['objednavka'] }),
+    body: JSON.stringify({ body }),
   });
   if (!r.ok) return res.status(502).json({ ok: false, error: 'GitHub API: ' + r.status + ' ' + (await r.text()) });
-  const issue = await r.json();
+  const comment = await r.json();
   // bonus: spusti Action na zápis do orders/orders.jsonl
   try {
     await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/dispatches`, {
@@ -47,5 +47,5 @@ module.exports = async (req, res) => {
       body: JSON.stringify({ event_type: 'new-order', client_payload: o }),
     });
   } catch {}
-  return res.status(200).json({ ok: true, issue: issue.html_url });
+  return res.status(200).json({ ok: true, issue: `https://github.com/${OWNER}/${REPO}/issues/${ISSUE}`, comment: comment.html_url });
 };

@@ -249,8 +249,8 @@ footer strong{color:var(--gold-light);font-family:'Cormorant Garamond',serif;fon
 <div class="res" id="prevadzka" style="background:#0a1930;border-top:1px solid var(--line)">
   <div class="wrap">
     <div class="center" style="margin-bottom:24px"><div class="eyebrow" style="color:var(--gold-light)">Pre prevádzku</div><h2 style="color:#fff">Objednávky <em style="color:var(--gold-light)">na GitHube</em></h2><div class="divider">◆</div>
-    <p style="color:#aebdd6">Každá objednávka = jeden záznam na GitHube (Issues) s menom, adresou (KDE) a časom (KEDY). Plus lokálna história v tomto prehliadači.</p>
-    <p style="margin-top:12px"><a class="btn-outline" href="https://github.com/9psgsdv86v-code/kkk-kool-kids-klub/issues?q=is%3Aissue+label%3Aobjednavka" target="_blank" rel="noopener">Otvoriť objednávky na GitHube →</a></p></div>
+    <p style="color:#aebdd6">Každá objednávka = jeden komentár v issue <strong style="color:var(--gold-light)">#4</strong> s menom, adresou (KDE) a časom (KEDY). Plus lokálna história v tomto prehliadači.</p>
+    <p style="margin-top:12px"><a class="btn-outline" href="https://github.com/9psgsdv86v-code/kkk-kool-kids-klub/issues/4" target="_blank" rel="noopener">Otvoriť objednávky — issue #4 →</a></p></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:16px">
       <button class="btn-outline" onclick="copyOrders()">Kopírovať objednávky</button>
       <button class="btn-outline" onclick="exportOrders()">Stiahnuť CSV</button>
@@ -331,8 +331,9 @@ function updateCart(){
 }
 function toggleDrawer(o){document.getElementById('drawer').classList.toggle('open',o)}
 /* ===== SYSTÉM OBJEDNÁVOK → GITHUB ===== */
-const GH_OWNER='9psgsdv86v-code', GH_REPO='kkk-kool-kids-klub';
+const GH_OWNER='9psgsdv86v-code', GH_REPO='kkk-kool-kids-klub', GH_ORDER_ISSUE=4;
 const GH_ISSUES_URL=`https://github.com/${GH_OWNER}/${GH_REPO}/issues`;
+const GH_ORDER_URL=`${GH_ISSUES_URL}/${GH_ORDER_ISSUE}`;
 function getOrders(){try{return JSON.parse(localStorage.getItem('pi_orders')||'[]')}catch{return[]}}
 function saveOrders(o){localStorage.setItem('pi_orders',JSON.stringify(o))}
 function buildOrder(){
@@ -352,19 +353,21 @@ function buildOrder(){
     odkial:location.href
   };
 }
-function orderToIssueURL(o){
-  const title=`🍕 Objednávka ${o.id} — ${o.meno}`;
-  const body=[
+function orderToBody(o){
+  return [
+  `🍕 **Nová objednávka ${o.id}**`,``,
   `**Meno:** ${o.meno}`,``,
   `**KDE doručiť (adresa / telefón):** ${o.kde}`,``,
   `**KEDY objednané:** ${o.kedy_sk} (${o.kedy})`,``,
-  `**ID:** ${o.id}`,``,
   `**Položky:**`,
   ...o.polozky.map(x=>`- ${x.kusov}× ${x.pizza} — ${eur(x.spolu)}`),
   ``,`**Suma spolu:** ${eur(o.suma)}`,
   o.poznamka?``:'',o.poznamka?`**Poznámka:** ${o.poznamka}`:'',
   ``,`**Stránka:** ${o.odkial}`].join('\n');
-  return `${GH_ISSUES_URL}/new?labels=objednavka&title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
+}
+function orderToIssueURL(o){
+  // fallback bez backendu: otvorí issue #4, text sa skopíruje do schránky na vloženie ako komentár
+  return GH_ORDER_URL;
 }
 async function sendOrder(e){
   e.preventDefault();
@@ -384,11 +387,12 @@ async function sendOrder(e){
   }
   btn.disabled=false;btn.textContent=old;
   if(ok){
-    toast(`Grazie, ${o.meno} ✦ ${o.id} odoslaná na GitHub (${o.kedy_sk}) ✦`);
+    toast(`Grazie, ${o.meno} ✦ ${o.id} odoslaná do issue #4 (${o.kedy_sk}) ✦`);
   }else{
-    // fallback, ak backend ešte nebeží: ponúkni 1-klik ručné odoslanie
-    toast(`Uložené lokálne, GitHub API nedosiahol (${err||'backend nebeží'}). Klikni Prevádzka → GitHub, alebo nasaď API podľa OBJEDNAVKY-SETUP.md`);
-    window.open(orderToIssueURL(o),'_blank');
+    // fallback, ak backend ešte nebeží: skopíruj text a otvor issue #4 na ručné vloženie ako komentár
+    try{await navigator.clipboard.writeText(orderToBody(o))}catch{}
+    toast(`Uložené lokálne, text skopírovaný — vlož ho ako komentár do issue #4 (${err||'backend nebeží'})`);
+    window.open(GH_ORDER_URL,'_blank');
   }
   cart={};updateCart();e.target.reset();
 }

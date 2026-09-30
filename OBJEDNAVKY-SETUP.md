@@ -1,10 +1,11 @@
-# Systém objednávok → GitHub (Pizza Island)
+# Systém objednávok → GitHub issue #4 (Pizza Island)
 
-## Stav: AUTOMATICKY — 1 klik = hneď na GitHube ✅
+## Stav: AUTOMATICKY — 1 klik = komentár v issue #4 ✅
 
 Stránka po kliknutí na **Potvrdiť objednávku** sama POSTne objednávku
-(meno, KDE, KEDY, položky, suma) na `/api/order`. Backend ju zapíše na GitHub
-ako Issue s labelom `objednavka`. Žiadne ďalšie klikanie.
+(meno, KDE, KEDY, položky, suma) na `/api/order`. Backend ju pridá ako
+**komentár do `https://github.com/9psgsdv86v-code/kkk-kool-kids-klub/issues/4`**.
+Žiadne ďalšie klikanie.
 
 Podmienka: backend musí bežať (raz ho nasadíš, potom už navždy).
 
@@ -20,24 +21,26 @@ Podmienka: backend musí bežať (raz ho nasadíš, potom už navždy).
    - `GITHUB_TOKEN` = token z kroku 2
    - `GH_OWNER` = `9psgsdv86v-code`
    - `GH_REPO` = `kkk-kool-kids-klub`
+   - `GH_ISSUE_NUMBER` = `4`
    → Redeploy.
 5. Hotovo. V sekcii **Prevádzka** na stránke klikni **Otestovať** —
-   musí svietiť `● AKTÍVNE`. Odvtedy ide každá objednávka sama na GitHub.
+   musí svietiť `● AKTÍVNE`. Odvtedy ide každá objednávka sama do issue #4.
 
 Alternatíva bez Vercela: `node api/order-server.js` s `GITHUB_TOKEN`
-na vlastnom serveri/VPS a do políčka Endpoint v sekcii Prevádzka vpíš
-`https://tvoj-server/api/order` → Uložiť.
+(plus `GH_ISSUE_NUMBER=4`) na vlastnom serveri/VPS a do políčka Endpoint
+v sekcii Prevádzka vpíš `https://tvoj-server/api/order` → Uložiť.
 
 ## Kde objednávky nájdeš
 
-- `https://github.com/9psgsdv86v-code/kkk-kool-kids-klub/issues?q=is%3Aissue+label%3Aobjednavka`
-- Každé Issue obsahuje: ID, meno, **KDE (adresa)**, **KEDY (čas)**,
-  položky, sumu, poznámku.
-- Notifikácie: v repe `Watch → Custom → Issues` (chodia e-mailom + do appky).
+- `https://github.com/9psgsdv86v-code/kkk-kool-kids-klub/issues/4`
+  — každá objednávka = 1 komentár s ID, menom, **KDE (adresa)**,
+  **KEDY (čas)**, položkami, sumou a poznámkou.
+- Notifikácie: v issue #4 klikni **Subscribe** — nové komentáre ti prídu
+  e-mailom + do GitHub appky.
 - Bonus: backend spustí aj Action `orders.yml` → riadky v `orders/orders.jsonl`.
 
 ## Núdzový režim (backend nebeží)
 
-Ak API neodpovedá, stránka objednávku uloží lokálne a otvorí
-predvyplnené GitHub Issue na 1-klik potvrdenie. V Prevádzke vtedy svieti
-`● VYPNUTÉ`.
+Ak API neodpovedá, stránka objednávku uloží lokálne, text skopíruje do
+schránky a otvorí issue #4 — text tam vložíš ako komentár ručne.
+V Prevádzke vtedy svieti `● VYPNUTÉ`.
