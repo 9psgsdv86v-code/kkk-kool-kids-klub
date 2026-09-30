@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="sk" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epstein Pizza | Recepty, ktoré neexistujú</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: '#D4AF37',
+                        goldDark: '#AA7C11',
+                        darkBg: '#0F1115',
+                        cardBg: '#181B20',
+                        accentRed: '#8B0000',
+                    },
+                    fontFamily: {
+                        serif: ['Cinzel', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gold-gradient {
+            background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA7C11 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gold-bg {
+            background: linear-gradient(135deg, #BF953F 0%, #D4AF37 50%, #AA7C11 100%);
+        }
+        .gold-border {
+            border-image: linear-gradient(to right, #BF953F, #AA7C11) 1;
+        }
+        .redact-hover:hover {
+            background-color: #D4AF37;
+            color: #000;
+        }
+    </style>
+</head>
+<body class="bg-darkBg text-gray-200 font-sans antialiased flex flex-col min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-darkBg/95 backdrop-blur-md border-b border-gold/20 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center space-x-3 group">
+                    <div class="w-12 h-12 rounded-full gold-bg flex items-center justify-center text-darkBg text-2xl font-bold shadow-lg shadow-gold/20 transform group-hover:rotate-12 transition duration-300">
+                        <i class="fa-solid font-serif">E</i>
+                    </div>
+                    <div>
+                        <span class="font-serif text-2xl font-extrabold gold-gradient tracking-wider block">EPSTEIN PIZZA</span>
+                        <span class="text-[10px] tracking-widest uppercase text-gray-400 block -mt-1">Recepty, ktoré neexistujú</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8 text-sm uppercase tracking-wider font-semibold">
+                    <a href="#about" class="hover:text-gold transition-colors">O Nás</a>
+                    <a href="#menu" class="hover:text-gold transition-colors">Tajnopis Menu</a>
+                    <a href="#reservations" class="hover:text-gold transition-colors">VIP Salónik</a>
+                    <a href="#contact" class="hover:text-gold transition-colors">Súradnice</a>
+                </div>
+
+                <!-- Cart & Action -->
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleCart()" class="relative p-2 text-gold hover:text-white transition-colors">
+                        <i class="fa-solid fa-shopping-bag text-2xl"></i>
+                        <span id="cart-count" class="absolute -top-1 -right-1 bg-accentRed text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold border border-darkBg">0</span>
+                    </button>
+                    <a href="#reservations" class="hidden sm:inline-block gold-bg text-darkBg font-bold px-5 py-2.5 rounded-lg hover:opacity-90 transition shadow-lg shadow-gold/10">
+                        Rezervovať Ostrov
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative py-24 md:py-32 overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-900 via-darkBg to-black">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="text-left space-y-6">
+                    <div class="inline-flex items-center space-x-2 bg-gold/10 border border-gold/30 px-3 py-1.5 rounded-full text-gold text-xs font-semibold uppercase tracking-widest">
+                        <i class="fa-solid fa-user-secret"></i>
+                        <span>Prísne Dôverné Receptúry</span>
+                    </div>
+                    <h1 class="text-4xl sm:text-6xl font-serif font-extrabold text-white leading-tight">
+                        Chuti, ktorej <span class="gold-gradient">neuveríte</span>, kým ju neskúsite.
+                    </h1>
+                    <p class="text-gray-400 text-lg leading-relaxed max-w-xl">
+                        Vitajte v jedinečnej gastronomickej záhade. Piecky rozpaľujeme na tajnom súkromnom ostrove chuti. Vaša objednávka sa po doručení samočinne vymaže.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                        <a href="#menu" class="gold-bg text-darkBg font-bold text-center px-8 py-4 rounded-xl hover:shadow-xl hover:shadow-gold/20 transition duration-300">
+                            Prezrieť Jedálny Lístok
+                        </a>
+                        <a href="#about" class="border border-gold/40 text-gold text-center font-semibold px-8 py-4 rounded-xl hover:bg-gold/10 transition">
+                            Odkryť Tajomstvo
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Pizza Visual -->
+                <div class="relative flex justify-center">
+                    <div class="w-72 h-72 sm:w-96 sm:h-96 rounded-full gold-bg/20 animate-pulse absolute blur-3xl"></div>
+                    <div class="relative bg-cardBg border-2 border-gold/30 p-4 rounded-3xl shadow-2xl transform rotate-3 hover:rotate-0 transition duration-500">
+                        <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80" alt="Luxusná Pizza" class="w-full h-80 object-cover rounded-2xl shadow-inner">
+                        <div class="absolute -bottom-6 -left-6 bg-darkBg border border-gold/30 p-4 rounded-2xl shadow-xl flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-accentRed flex items-center justify-center text-white">
+                                <i class="fa-solid fa-eye-slash"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-400">Bezpečnostný protokol</p>
+                                <p class="text-sm font-bold text-white">100% Anonymné doručenie</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-cardBg/50 border-y border-gold/10 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl sm:text-4xl font-serif font-bold gold-gradient mb-4">O Našom Klube</h2>
+                <div class="w-24 h-1 gold-bg mx-auto mb-6"></div>
+                <p class="text-gray-300 text-lg">
+                    Sme exkluzívna gastronomická spoločnosť určená len pre tých, ktorí vedia, čo hľadajú. Naše suroviny dovážame súkromnými lietadlami a cesto kysne v podzemných trezoroch pod prísnym dohľadom.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-darkBg p-8 rounded-2xl border border-gold/20 hover:border-gold/50 transition">
+                    <div class="w-14 h-14 rounded-xl gold-bg/10 border border-gold/30 flex items-center justify-center text-gold text-2xl mb-6">
+                        <i class="fa-solid fa-plane-departure"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Súkromná Letka Doručovateľov</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Žiadne bežné kuriérske služby. Vašu pizzu doručujeme priamo na váš helipad alebo do súkromného hangáru v rekordne krátkom čase.
+                    </p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="bg-darkBg p-8 rounded-2xl border border-gold/20 hover:border-gold/50 transition">
+                    <div class="w-14 h-14 rounded-xl gold-bg/10 border border-gold/30 flex items-center justify-center text-gold text-2xl mb-6">
+                        <i class="fa-solid fa-vault"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Zašifrovaná Chuť</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Naša omáčka obsahuje tajné bylinky, ktorých zloženie je začiernené vo všetkých verejne dostupných dokumentoch.
+                    </p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-darkBg p-8 rounded-2xl border border-gold/20 hover:border-gold/50 transition">
+                    <div class="w-14 h-14 rounded-xl gold-bg/10 border border-gold/30 flex items-center justify-center text-gold text-2xl mb-6">
+                        <i class="fa-solid fa-crown"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">VIP Klientela</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Medzi našich pravidelných odberateľov patria diplomati, miliardári a ľudia, ktorí "nikdy na žiadnom ostrove neboli".
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <span class="text-gold text-sm font-semibold tracking-widest uppercase">Prísne Tajný Súpis</span>
+            <h2 class="text-3xl sm:text-5xl font-serif font-bold text-white mt-2">Jedálny Lístok</h2>
+            <div class="w-24 h-1 gold-bg mx-auto mt-4"></div>
+        </div>
+
+        <!-- Category Filters -->
+        <div class="flex justify-center space-x-2 sm:space-x-4 mb-12 flex-wrap gap-y-2">
+            <button onclick="filterMenu('all')" class="menu-tab active bg-gold text-darkBg font-bold px-6 py-2.5 rounded-full text-sm transition">Všetky Pizze</button>
+            <button onclick="filterMenu('signature')" class="menu-tab bg-cardBg border border-gold/30 text-gray-300 hover:text-gold px-6 py-2.5 rounded-full text-sm transition">Špeciály Ostrova</button>
+            <button onclick="filterMenu('classic')" class="menu-tab bg-cardBg border border-gold/30 text-gray-300 hover:text-gold px-6 py-2.5 rounded-full text-sm transition">Klasika</button>
+            <button onclick="filterMenu('drinks')" class="menu-tab bg-cardBg border border-gold/30 text-gray-300 hover:text-gold px-6 py-2.5 rounded-full text-sm transition">Nápoje & Elixíry</button>
+        </div>
+
+        <!-- Menu Grid -->
+        <div id="menu-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Menu items rendered dynamically via JavaScript -->
+        </div>
+    </section>
+
+    <!-- Reservations Section -->
+    <section id="reservations" class="py-20 bg-cardBg relative overflow-hidden">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="bg-darkBg border border-gold/30 p-8 sm:p-12 rounded-3xl shadow-2xl">
+                <div class="text-center mb-10">
+                    <i class="fa-solid fa-key text-gold text-3xl mb-4"></i>
+                    <h2 class="text-3xl font-serif font-bold text-white">Rezervácia VIP Salónika</h2>
+                    <p class="text-gray-400 text-sm mt-2">Zadajte prístupové údaje pre rezerváciu stola v krytom komplexe.</p>
+                </div>
+
+                <form id="booking-form" onsubmit="handleBooking(event)" class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-2">Kódové Meno / Pseudonym</label>
+                            <input type="text" required placeholder="Napr. Agent 007" class="w-full bg-cardBg border border-gold/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-2">Počet Hostí (Max. 12)</label>
+                            <input type="number" min="1" max="12" required placeholder="2" class="w-full bg-cardBg border border-gold/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold transition">
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-2">Dátum Utajeného Stretnutia</label>
+                            <input type="date" required class="w-full bg-cardBg border border-gold/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-2">Čas Pristátia</label>
+                            <input type="time" required class="w-full bg-cardBg border border-gold/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-2">Špeciálne Bezpečnostné Požiadavky</label>
+                        <textarea rows="3" placeholder="Napr. Nepozorovaný príchod zo severného prístavu..." class="w-full bg-cardBg border border-gold/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold transition"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full gold-bg text-darkBg font-bold py-4 rounded-xl hover:opacity-90 transition shadow-lg shadow-gold/20 text-lg">
+                        Odoslať Šifrovanú Žiadosť
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <span class="text-gold text-sm font-semibold tracking-widest uppercase">Súradnice & Kontakt</span>
+                <h2 class="text-3xl font-serif font-bold text-white mt-2 mb-6">Kde Nás (Ne)nájdete</h2>
+                
+                <div class="space-y-6 text-gray-300">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-10 h-10 rounded-lg gold-bg/10 border border-gold/30 flex items-center justify-center text-gold shrink-0">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Adresa</h4>
+                            <p class="text-sm text-gray-400">Little St. James Island, Karibik <br><span class="text-xs text-gold">(Súradnice: 18.3003° N, 64.8253° W)</span></p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-4">
+                        <div class="w-10 h-10 rounded-lg gold-bg/10 border border-gold/30 flex items-center justify-center text-gold shrink-0">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Horúca Linka</h4>
+                            <p class="text-sm text-gray-400">+421 900 REDACTED (Súkromná stanica)</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-4">
+                        <div class="w-10 h-10 rounded-lg gold-bg/10 border border-gold/30 flex items-center justify-center text-gold shrink-0">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Šifrovaný Email</h4>
+                            <p class="text-sm text-gray-400">pedro@epsteinpizza.secret</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fake Map Placeholder -->
+            <div class="bg-cardBg border border-gold/20 rounded-3xl p-6 relative overflow-hidden h-80 flex flex-col justify-center items-center text-center">
+                <div class="absolute inset-0 bg-black/60 z-10 flex flex-col items-center justify-center p-6 backdrop-blur-sm">
+                    <i class="fa-solid fa-ban text-4xl text-accentRed mb-3"></i>
+                    <h3 class="text-xl font-bold text-white mb-2">MAPA JE ZACENZUROVANÁ</h3>
+                    <p class="text-gray-400 text-sm max-w-xs">Satelitné snímky tejto oblasti boli na základe vládneho nariadenia odstránené.</p>
+                </div>
+                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80" alt="Map satellite" class="w-full h-full object-cover rounded-2xl opacity-40">
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-auto bg-black border-t border-gold/10 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
+            <p>&copy; 2026 Epstein Pizza. Všetky autorské práva začiernené.</p>
+            <div class="flex space-x-6">
+                <a href="#" class="hover:text-gold transition">Ochrana Dát (Vymazané)</a>
+                <a href="#" class="hover:text-gold transition">Podmienky Použitia</a>
+                <a href="#" class="hover:text-gold transition">Protokol B-52</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Slide-over -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity" onclick="toggleCart()"></div>
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-cardBg border-l border-gold/20 text-white p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between pb-6 border-b border-gold/10">
+                        <h2 class="text-xl font-serif font-bold gold-gradient">Tvoj Utajený Košík</h2>
+                        <button onclick="toggleCart()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
+                    </div>
+
+                    <div id="cart-items" class="py-6 space-y-4 max-h-[60vh] overflow-y-auto">
+                        <p class="text-gray-400 text-center py-8">Košík je zatiaľ prázdny...</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-gold/10 pt-6 space-y-4">
+                    <div class="flex justify-between text-lg font-bold">
+                        <span>Celkom:</span>
+                        <span id="cart-total" class="text-gold">0.00 €</span>
+                    </div>
+                    <button onclick="checkout()" class="w-full gold-bg text-darkBg font-bold py-3 rounded-xl hover:opacity-90 transition">
+                        Objednať Šifrovane
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Message Box -->
+    <div id="notification" class="fixed bottom-6 right-6 z-50 bg-darkBg border border-gold/40 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 translate-y-24 opacity-0 transition-all duration-300">
+        <i id="notif-icon" class="fa-solid fa-circle-check text-gold text-xl"></i>
+        <span id="notif-text" class="text-sm font-semibold">Správa bola odoslaná!</span>
+    </div>
+
+    <script>
+        // Menu Data
+        const menuData = [
+            {
+                id: 1,
+                name: "Pizza Lolita Express",
+                category: "signature",
+                price: 18.90,
+                desc: "Paradajkový základ, prísne tajná mozarella, feferóny, orlické bylinky a exkluzívny hľuzovkový olej.",
+                image: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 2,
+                name: "Karibský Špeciál 'St. James'",
+                category: "signature",
+                price: 22.00,
+                desc: "Morský vánok na pizzi: pikantné krevety, kokosové hobliny, ananás marinovaný v rume a čerstvá bazalka.",
+                image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 3,
+                name: "Začiernená Margherita (Redacted)",
+                category: "classic",
+                price: 11.50,
+                desc: "Tradičná pizza, no s čiernym ciabatta cestom z aktívneho uhlia, čerstvými paradajkami a špičkovou mozarellou.",
+                image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 4,
+                name: "Quattro Safe-Deposit",
+                category: "classic",
+                price: 14.90,
+                desc: "Štyri druhy utajovaných zrejúcich syrov: Gorgonzola, Parmezán, Mozzarella a Pecorino so štipkou medu.",
+                image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 5,
+                name: "Miliardárska Slaninka",
+                category: "signature",
+                price: 19.50,
+                desc: "Chrumkavá údená slaninka, poctivá klobása, červená cibuľa, jalapeños a kvapka 24-karátového jedlého zlata.",
+                image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 6,
+                name: "Elixír Mladosti (0.5l)",
+                category: "drinks",
+                price: 6.50,
+                desc: "Špeciálny domáci energetický nápoj z granátového jablka, zázvoru, limetky a tajnej ingrediencie.",
+                image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80"
+            }
+        ];
+
+        let cart = [];
+
+        // Render Menu Items
+        function renderMenu(items) {
+            const grid = document.getElementById('menu-grid');
+            grid.innerHTML = items.map(item => `
+                <div class="bg-cardBg border border-gold/20 rounded-2xl overflow-hidden hover:border-gold/50 transition duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                            <span class="absolute top-3 right-3 gold-bg text-darkBg text-xs font-bold px-3 py-1 rounded-full uppercase">
+                                ${item.category === 'signature' ? 'VIP Špeciál' : 'Klasika'}
+                            </span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-2 font-serif">${item.name}</h3>
+                            <p class="text-gray-400 text-sm leading-relaxed mb-4">${item.desc}</p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6 pt-0 flex items-center justify-between border-t border-gold/10 mt-auto">
+                        <span class="text-xl font-bold gold-gradient">${item.price.toFixed(2)} €</span>
+                        <button onclick="addToCart(${item.id})" class="bg-gold/10 hover:bg-gold text-gold hover:text-darkBg border border-gold/30 font-bold px-4 py-2 rounded-xl transition flex items-center space-x-2">
+                            <i class="fa-solid fa-plus text-xs"></i>
+                            <span>Pridať</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter Menu
+        function filterMenu(category) {
+            // Update active tab buttons
+            document.querySelectorAll('.menu-tab').forEach(btn => {
+                btn.classList.remove('bg-gold', 'text-darkBg');
+                btn.classList.add('bg-cardBg', 'text-gray-300');
+            });
+            event.target.classList.add('bg-gold', 'text-darkBg');
+            event.target.classList.remove('bg-cardBg', 'text-gray-300');
+
+            if (category === 'all') {
+                renderMenu(menuData);
+            } else {
+                const filtered = menuData.filter(item => item.category === category);
+                renderMenu(filtered);
+            }
+        }
+
+        // Cart Functions
+        function addToCart(id) {
+            const item = menuData.find(i => i.id === id);
+            const existing = cart.find(i => i.id === id);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...item, qty: 1 });
+            }
+            updateCartUI();
+            showNotification(`"<sup>*</sup>${item.name}" pridané do tajného košíka!`);
+        }
+
+        function updateCartUI() {
+            const cartItems = document.getElementById('cart-items');
+            const cartCount = document.getElementById('cart-count');
+            const cartTotal = document.getElementById('cart-total');
+
+            const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            cartCount.innerText = totalQty;
+            cartTotal.innerText = totalPrice.toFixed(2) + ' €';
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = `<p class="text-gray-400 text-center py-8">Košík je zatiaľ prázdny...</p>`;
+            } else {
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="flex items-center justify-between bg-darkBg p-3 rounded-xl border border-gold/10">
+                        <div>
+                            <h4 class="font-bold text-sm text-white">${item.name}</h4>
+                            <p class="text-xs text-gold">${item.price.toFixed(2)} € x ${item.qty}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="changeQty(${item.id}, -1)" class="w-6 h-6 bg-cardBg text-gray-300 rounded flex items-center justify-center hover:bg-gold hover:text-darkBg">-</button>
+                            <span class="text-sm font-bold">${item.qty}</span>
+                            <button onclick="changeQty(${item.id}, 1)" class="w-6 h-6 bg-cardBg text-gray-300 rounded flex items-center justify-center hover:bg-gold hover:text-darkBg">+</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function changeQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) {
+                    cart = cart.filter(i => i.id !== id);
+                }
+            }
+            updateCartUI();
+        }
+
+        function toggleCart() {
+            const drawer = document.getElementById('cart-drawer');
+            drawer.classList.toggle('hidden');
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                showNotification("Váš košík je prázdny!", true);
+                return;
+            }
+            cart = [];
+            updateCartUI();
+            toggleCart();
+            showNotification("Objednávka bola odoslaná! Recepty boli skartované.");
+        }
+
+        // Handle Booking Form
+        function handleBooking(e) {
+            e.preventDefault();
+            showNotification("Žiadosť o VIP stôl schválená. Čakajte na signál.");
+            e.target.reset();
+        }
+
+        // Show Notification Banner
+        function showNotification(msg, isError = false) {
+            const notif = document.getElementById('notification');
+            const notifText = document.getElementById('notif-text');
+            const notifIcon = document.getElementById('notif-icon');
+
+            notifText.innerText = msg;
+            if (isError) {
+                notifIcon.className = "fa-solid fa-triangle-exclamation text-accentRed text-xl";
+            } else {
+                notifIcon.className = "fa-solid fa-user-secret text-gold text-xl";
+            }
+
+            notif.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                notif.classList.add('translate-y-24', 'opacity-0');
+            }, 3500);
+        }
+
+        // Initial Render
+        window.onload = function() {
+            renderMenu(menuData);
+        };
+    </script>
+</body>
+</html>
