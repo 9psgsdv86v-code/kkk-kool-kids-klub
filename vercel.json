@@ -1,0 +1,4 @@
+{
+  "functions": { "api/order.js": { "maxDuration": 15 } },
+  "rewrites": [{ "source": "/api/order", "destination": "/api/order.js" }]
+}

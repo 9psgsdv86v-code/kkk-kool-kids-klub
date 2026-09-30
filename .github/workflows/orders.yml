@@ -1,0 +1,35 @@
+name: Uložiť objednávku
+
+# Voliteľný automat: ak raz nasadíš mini-backend, objednávky sa zapíšu
+# samé do orders/orders.jsonl (bez ručného potvrdzovania Issue).
+# Frontend medzitým funguje aj bez neho — cez predvyplnené GitHub Issue.
+on:
+  repository_dispatch:
+    types: [new-order]
+  workflow_dispatch:
+    inputs:
+      order:
+        description: 'JSON objednávky'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  save:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pridať objednávku do orders/orders.jsonl
+        env:
+          PAYLOAD: ${{ toJson(github.event.client_payload) }}
+          MANUAL: ${{ inputs.order }}
+        run: |
+          mkdir -p orders
+          if [ "$PAYLOAD" != "null" ] && [ "$PAYLOAD" != "" ]; then echo "$PAYLOAD" >> orders/orders.jsonl; fi
+          if [ -n "$MANUAL" ]; then echo "$MANUAL" >> orders/orders.jsonl; fi
+          git config user.name "pizza-island-bot"
+          git config user.email "bot@pizzaisland.sk"
+          git add orders/orders.jsonl
+          git diff --staged --quiet || git commit -m "🍕 nová objednávka"
+          git push

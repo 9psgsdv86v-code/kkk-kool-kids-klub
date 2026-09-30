@@ -170,7 +170,7 @@ footer strong{color:var(--gold-light);font-family:'Cormorant Garamond',serif;fon
 <header id="hdr">
   <div class="h-in">
     <a class="brand" href="#domov"><div class="brand-mark">🍕</div><div><b>Pizza <i>Island</i></b><small>RISTORANTE • BRATISLAVA</small></div></a>
-    <nav><a href="#domov">Domov</a><a href="#menu">Menu</a><a href="#pribeh">Príbeh</a><a href="#kontakt">Rezervácia</a></nav>
+    <nav><a href="#domov">Domov</a><a href="#menu">Menu</a><a href="#pribeh">Príbeh</a><a href="#kontakt">Rezervácia</a><a href="#prevadzka">Prevádzka</a></nav>
     <div class="h-actions"><div class="guarantee-pill">✦ VŠETKO DO 25 €</div><button class="cart-btn" onclick="toggleDrawer(true)">KOŠÍK <span class="n" id="cartCount">0</span></button></div>
   </div>
 </header>
@@ -240,9 +240,32 @@ footer strong{color:var(--gold-light);font-family:'Cormorant Garamond',serif;fon
       <div class="form-panel">
         <h3 class="serif" style="font-size:1.7rem;color:#0a1930;margin-bottom:6px">Rezervovať / objednať</h3>
         <p style="color:#5a6b87;font-size:.9rem;margin-bottom:14px">Ostrovná 12, Bratislava • Po–Ne 11:00–22:00 • 0900 123 456</p>
-        <form onsubmit="sendOrder(event)"><input required id="meno" placeholder="Meno a priezvisko"><input required id="addr" placeholder="Telefón / adresa dovozu"><select id="pizzaSel"></select><textarea rows="3" placeholder="Poznámka — čas, alergie, poschodie…"></textarea><button class="btn-gold" style="width:100%;justify-content:center" type="submit">Potvrdiť objednávku ✦</button></form>
+        <form onsubmit="sendOrder(event)"><input required id="meno" placeholder="Meno a priezvisko"><input required id="addr" placeholder="Telefón / adresa dovozu — KDE vám to má prísť?"><select id="pizzaSel"></select><textarea id="note" rows="3" placeholder="Poznámka — čas, alergie, poschodie…"></textarea><button class="btn-gold" style="width:100%;justify-content:center" type="submit">Potvrdiť objednávku ✦</button><p style="font-size:.78rem;color:#5a6b87;margin-top:10px">✦ Objednávka sa uloží a otvorí sa predvyplnený záznam na GitHube (Issues) — tam ju uvidíš aj s časom a adresou. <a href="#prevadzka">Prevádzka →</a></p></form>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="res" id="prevadzka" style="background:#0a1930;border-top:1px solid var(--line)">
+  <div class="wrap">
+    <div class="center" style="margin-bottom:24px"><div class="eyebrow" style="color:var(--gold-light)">Pre prevádzku</div><h2 style="color:#fff">Objednávky <em style="color:var(--gold-light)">na GitHube</em></h2><div class="divider">◆</div>
+    <p style="color:#aebdd6">Každá objednávka = jeden záznam na GitHube (Issues) s menom, adresou (KDE) a časom (KEDY). Plus lokálna história v tomto prehliadači.</p>
+    <p style="margin-top:12px"><a class="btn-outline" href="https://github.com/9psgsdv86v-code/kkk-kool-kids-klub/issues?q=is%3Aissue+label%3Aobjednavka" target="_blank" rel="noopener">Otvoriť objednávky na GitHube →</a></p></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:16px">
+      <button class="btn-outline" onclick="copyOrders()">Kopírovať objednávky</button>
+      <button class="btn-outline" onclick="exportOrders()">Stiahnuť CSV</button>
+      <button class="btn-outline" onclick="clearOrders()">Vymazať lokálnu históriu</button>
+    </div>
+    <div style="max-width:720px;margin:0 auto 16px;border:1px solid var(--line);padding:14px;background:rgba(255,255,255,.03);font-size:.85rem;color:#c2cfe4">
+      <strong style="color:var(--gold-light)">Automatické odosielanie:</strong> <span id="apiStatus">kontrolujem…</span><br>
+      <span style="color:#8b9bb5">Endpoint (predvolené <code>/api/order</code> — po nasadení na Vercel už netreba nič vypĺňať):</span>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+        <input id="endpoint" placeholder="https://tvoja-domena.vercel.app/api/order" style="flex:1;min-width:240px;background:#060d1f;border:1px solid var(--line);color:#fff;padding:10px;font:inherit">
+        <button class="btn-outline" onclick="saveEndpoint()">Uložiť</button>
+        <button class="btn-outline" onclick="testEndpoint()">Otestovať</button>
+      </div>
+    </div>
+    <div id="ordersTable" style="border:1px solid var(--line);background:rgba(255,255,255,.03);padding:8px;overflow:auto"></div>
   </div>
 </div>
 
@@ -307,7 +330,102 @@ function updateCart(){
   L.innerHTML=h1;B.innerHTML=h2;
 }
 function toggleDrawer(o){document.getElementById('drawer').classList.toggle('open',o)}
-function sendOrder(e){e.preventDefault();const m=meno.value,idx=pizzaSel.value||0;toast(`Grazie, ${m} ✦ ${PIZZAS[idx].n} (${eur(PIZZAS[idx].price)}) sa už pečie pri 450 °C`);cart={};updateCart();e.target.reset()}
+/* ===== SYSTÉM OBJEDNÁVOK → GITHUB ===== */
+const GH_OWNER='9psgsdv86v-code', GH_REPO='kkk-kool-kids-klub';
+const GH_ISSUES_URL=`https://github.com/${GH_OWNER}/${GH_REPO}/issues`;
+function getOrders(){try{return JSON.parse(localStorage.getItem('pi_orders')||'[]')}catch{return[]}}
+function saveOrders(o){localStorage.setItem('pi_orders',JSON.stringify(o))}
+function buildOrder(){
+  const idx=document.getElementById('pizzaSel').value||0;
+  const items=Object.entries(cart).map(([i,n])=>({pizza:PIZZAS[i].n,cena:PIZZAS[i].price,kusov:n,spolu:+(PIZZAS[i].price*n).toFixed(2)}));
+  if(!items.length)items.push({pizza:PIZZAS[idx].n,cena:PIZZAS[idx].price,kusov:1,spolu:PIZZAS[idx].price});
+  const now=new Date();
+  return {
+    id:'PI-'+now.getFullYear()+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0')+'-'+String(now.getHours()).padStart(2,'0')+String(now.getMinutes()).padStart(2,'0')+String(now.getSeconds()).padStart(2,'0'),
+    meno:document.getElementById('meno').value.trim(),
+    kde:document.getElementById('addr').value.trim(),
+    poznamka:document.getElementById('note').value.trim(),
+    polozky:items,
+    suma:+items.reduce((s,x)=>s+x.spolu,0).toFixed(2),
+    kedy:now.toISOString(),
+    kedy_sk:now.toLocaleString('sk-SK'),
+    odkial:location.href
+  };
+}
+function orderToIssueURL(o){
+  const title=`🍕 Objednávka ${o.id} — ${o.meno}`;
+  const body=[
+  `**Meno:** ${o.meno}`,``,
+  `**KDE doručiť (adresa / telefón):** ${o.kde}`,``,
+  `**KEDY objednané:** ${o.kedy_sk} (${o.kedy})`,``,
+  `**ID:** ${o.id}`,``,
+  `**Položky:**`,
+  ...o.polozky.map(x=>`- ${x.kusov}× ${x.pizza} — ${eur(x.spolu)}`),
+  ``,`**Suma spolu:** ${eur(o.suma)}`,
+  o.poznamka?``:'',o.poznamka?`**Poznámka:** ${o.poznamka}`:'',
+  ``,`**Stránka:** ${o.odkial}`].join('\n');
+  return `${GH_ISSUES_URL}/new?labels=objednavka&title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
+}
+async function sendOrder(e){
+  e.preventDefault();
+  const btn=e.target.querySelector('button[type=submit]');
+  const o=buildOrder();
+  const all=getOrders();all.unshift(o);saveOrders(all);renderOrders();
+  btn.disabled=true;const old=btn.textContent;btn.textContent='Odosielam… ⏳';
+  // AUTOMAT: odošli na backend → ten to zapíše na GitHub sám, bez ďalšieho klikania
+  const eps=getEndpoints();
+  let ok=false,err='';
+  for(const url of eps){
+    try{
+      const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)});
+      if(r.ok){ok=true;break}
+      err='HTTP '+r.status;
+    }catch(ex){err=String(ex.message||ex)}
+  }
+  btn.disabled=false;btn.textContent=old;
+  if(ok){
+    toast(`Grazie, ${o.meno} ✦ ${o.id} odoslaná na GitHub (${o.kedy_sk}) ✦`);
+  }else{
+    // fallback, ak backend ešte nebeží: ponúkni 1-klik ručné odoslanie
+    toast(`Uložené lokálne, GitHub API nedosiahol (${err||'backend nebeží'}). Klikni Prevádzka → GitHub, alebo nasaď API podľa OBJEDNAVKY-SETUP.md`);
+    window.open(orderToIssueURL(o),'_blank');
+  }
+  cart={};updateCart();e.target.reset();
+}
+function getEndpoints(){
+  const custom=(localStorage.getItem('pi_endpoint')||'').trim();
+  const list=[];
+  if(custom)list.push(custom);
+  list.push('/api/order'); // Vercel / rovnaká doména
+  return [...new Set(list)];
+}
+function saveEndpoint(){localStorage.setItem('pi_endpoint',document.getElementById('endpoint').value.trim());checkApi();toast('Endpoint uložený ✦')}
+async function checkApi(){
+  const el=document.getElementById('apiStatus');if(!el)return;
+  el.textContent='kontrolujem…';
+  for(const url of getEndpoints()){
+    try{const r=await fetch(url,{method:'OPTIONS'});if(r.ok||r.status===204){el.innerHTML=`<strong style="color:#3ddc84">● AKTÍVNE</strong> — objednávky idú samé na GitHub cez <code>${url}</code>`;return}}catch{}
+  }
+  el.innerHTML='<strong style="color:#ff9a9a">● VYPNUTÉ</strong> — backend nebeží, nasaď ho podľa OBJEDNAVKY-SETUP.md (5 min na Verceli). Dovtedy sa otvára GitHub okno.';
+}
+async function testEndpoint(){await checkApi();toast('Endpoint otestovaný — pozri stav vyššie ✦')}
+checkApi();
+setTimeout(()=>{const i=document.getElementById('endpoint');if(i)i.value=localStorage.getItem('pi_endpoint')||''},0);
+function renderOrders(){
+  const box=document.getElementById('ordersTable');if(!box)return;
+  const all=getOrders();
+  if(!all.length){box.innerHTML='<p style="color:#8b9bb5;padding:16px;text-align:center">Zatiaľ žiadne lokálne objednávky. Nové prídu sem + na GitHub do Issues.</p>';return}
+  box.innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:.85rem;color:#e6ecf7;min-width:640px"><thead><tr style="color:var(--gold-light);letter-spacing:1px;font-size:.72rem"><th style="text-align:left;padding:10px;border-bottom:1px solid var(--line)">ID / KEDY</th><th style="text-align:left;padding:10px;border-bottom:1px solid var(--line)">MENO</th><th style="text-align:left;padding:10px;border-bottom:1px solid var(--line)">KDE</th><th style="text-align:left;padding:10px;border-bottom:1px solid var(--line)">POLOŽKY</th><th style="text-align:right;padding:10px;border-bottom:1px solid var(--line)">SUMA</th></tr></thead><tbody>${all.map(o=>`<tr><td style="padding:10px;border-bottom:1px solid rgba(201,168,106,.15)"><strong>${o.id}</strong><br><span style="color:#8b9bb5">${o.kedy_sk}</span></td><td style="padding:10px;border-bottom:1px solid rgba(201,168,106,.15)">${o.meno}</td><td style="padding:10px;border-bottom:1px solid rgba(201,168,106,.15)">${o.kde}${o.poznamka?`<br><span style="color:#8b9bb5">📝 ${o.poznamka}</span>`:''}</td><td style="padding:10px;border-bottom:1px solid rgba(201,168,106,.15)">${o.polozky.map(x=>`${x.kusov}× ${x.pizza}`).join('<br>')}</td><td style="padding:10px;border-bottom:1px solid rgba(201,168,106,.15);text-align:right"><strong>${eur(o.suma)}</strong><br><a style="color:var(--gold-light)" target="_blank" rel="noopener" href="${orderToIssueURL(o)}">→ GitHub</a></td></tr>`).join('')}</tbody></table>`;
+}
+function copyOrders(){navigator.clipboard.writeText(JSON.stringify(getOrders(),null,2)).then(()=>toast('Objednávky skopírované ✦'),()=>toast('Kopírovanie zlyhalo'))}
+function exportOrders(){
+  const all=getOrders();if(!all.length)return toast('Nič na export');
+  const rows=[['id','kedy','meno','kde','poznamka','polozky','suma']];
+  all.forEach(o=>rows.push([o.id,o.kedy,`"${o.meno}"`,`"${o.kde}"`,`"${(o.poznamka||'').replace(/"/g,'""')}"`,`"${o.polozky.map(x=>x.kusov+'x '+x.pizza).join('; ')}"`,o.suma]));
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([rows.map(r=>r.join(',')).join('\n')],{type:'text/csv'}));a.download='pizza-island-objednavky.csv';a.click();
+}
+function clearOrders(){if(confirm('Vymazať lokálnu históriu objednávok? (GitHub Issues zostanú.)')){saveOrders([]);renderOrders()}}
+renderOrders();
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),3400)}
 updateCart();
 </script>
